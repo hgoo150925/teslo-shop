@@ -5,10 +5,11 @@ services:
     image: postgres
     restart: on-failure
     environment:
-      - POSTGRES_USER=${DB_USERNAME}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - PGDATA=${DB_PGDATA}
-      - POSTGRES_DB=${DB_NAME}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      PGDATA: ${DB_PGDATA}
+      POSTGRES_DB: ${DB_NAME}
+    container_name: teslodb
     volumes:
       - ./postgres_data:/var/lib/postgresql
     ports:
