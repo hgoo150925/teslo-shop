@@ -33,10 +33,10 @@ export class ProductsController {
     return this.productsService.findAll(paginationDto);
   }
 
-  @Get(':id')
+  @Get(':searchTerm')
   @HttpCode(HttpStatus.OK)
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.productsService.findOne(id);
+  findOne(@Param('searchTerm') searchTerm: string) {
+    return this.productsService.findOne(searchTerm);
   }
 
   @Patch(':id')
