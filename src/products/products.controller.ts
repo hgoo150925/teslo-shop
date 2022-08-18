@@ -36,7 +36,7 @@ export class ProductsController {
   @Get(':searchTerm')
   @HttpCode(HttpStatus.OK)
   findOne(@Param('searchTerm') searchTerm: string) {
-    return this.productsService.findOne(searchTerm);
+    return this.productsService.findOnePlain(searchTerm);
   }
 
   @Patch(':id')

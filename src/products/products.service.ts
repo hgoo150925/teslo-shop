@@ -45,12 +45,23 @@ export class ProductsService {
     }
   }
 
-  findAll(paginationDto: PaginationDto) {
+  async findAll(paginationDto: PaginationDto) {
     const { limit = 10, offset = 0 } = paginationDto;
-    return this.productRepository.find({
+    const products = await this.productRepository.find({
       take: limit,
       skip: offset,
+      relations: {
+        images: true,
+      },
     });
+    // return products.map((product) => ({
+    //   ...product,
+    //   images: product.images.map((img) => img.url),
+    // }));
+    return products.map(({ images, ...rest }) => ({
+      ...rest,
+      images: images.map((img) => img.url),
+    }));
   }
 
   async findOne(searchTerm: string) {
@@ -59,12 +70,13 @@ export class ProductsService {
     if (isUUID(searchTerm)) {
       product = await this.productRepository.findOneBy({ id: searchTerm });
     } else {
-      const queryBuilder = this.productRepository.createQueryBuilder();
+      const queryBuilder = this.productRepository.createQueryBuilder('product');
       product = await queryBuilder
         .where('UPPER(title) =:title or slug =:slug', {
           title: searchTerm.toUpperCase(),
           slug: searchTerm.toLowerCase(),
         })
+        .leftJoinAndSelect('product.images', 'productImages')
         .getOne();
     }
 
@@ -73,6 +85,15 @@ export class ProductsService {
     }
 
     return product;
+  }
+
+  // Realizará una busqueda
+  async findOnePlain(term: string) {
+    const { images = [], ...rest } = await this.findOne(term);
+    return {
+      ...rest,
+      images: images.map((img) => img.url),
+    };
   }
 
   async update(id: string, updateProductDto: UpdateProductDto) {
