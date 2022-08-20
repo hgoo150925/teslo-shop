@@ -61,6 +61,7 @@ export class Product {
   })
   images?: ProductImage[];
 
+  // Elimna los espacios vacios, etc
   @BeforeInsert()
   checkSlugInsert() {
     if (!this.slug) {
