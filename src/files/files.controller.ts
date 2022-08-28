@@ -8,6 +8,8 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+
 import { FilesService } from './files.service';
 import { fileFilter } from './helpers/fileFilter.helper';
 
@@ -22,6 +24,10 @@ export class FilesController {
   @UseInterceptors(
     FileInterceptor('file', {
       fileFilter: fileFilter,
+      storage: diskStorage({
+        destination: './static/uploads',
+      }),
+      // limits:{fileSize: 2000}
     }),
   )
   @HttpCode(HttpStatus.CREATED)
