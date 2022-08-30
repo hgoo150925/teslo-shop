@@ -10,6 +10,7 @@ import {
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import { diskStorage } from 'multer';
@@ -20,7 +21,10 @@ import { fileFilter, fileNamer } from './helpers/index';
 @Controller('files')
 export class FilesController {
   // https://docs.nestjs.com/techniques/file-upload
-  constructor(private readonly filesService: FilesService) {}
+  constructor(
+    private readonly filesService: FilesService,
+    private readonly configService: ConfigService,
+  ) {}
 
   @Get('product/:imageName')
   findProductImage(
@@ -52,7 +56,9 @@ export class FilesController {
       throw new BadRequestException('make sure that the file is a image');
     }
 
-    const secureUrl = `${file.fieldname}`;
+    const secureUrl = `${this.configService.get('HOST_API')}/files/product/${
+      file.filename
+    }`;
     return {
       secureUrl,
     };
